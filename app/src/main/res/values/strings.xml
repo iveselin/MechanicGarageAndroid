@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">MechanicGarageAndroid</string>
+    <string name="appointment_item_text">Rezerviraj termin</string>
+    <string name="car_details_item_text">Uredi podatke o vozilu</string>
+    <string name="email_input_hint">Email</string>
+    <string name="password_input_hint">Password</string>
+    <string name="password_reinput_hint">Potvrdi password</string>
+    <string name="login_submit_text">Unesi</string>
+    <string name="name_input_hint">Ime i prezime</string>
+    <string name="login_item_text">Prijavi se</string>
+    <string name="login_email_error">Unesite ispravan email</string>
+    <string name="login_password_error">Neispravna lozinka</string>
+    <string name="login_password_different_error">Šifre moraju biti jednake</string>
+    <string name="login_name_error">Morate ispuniti ovo polje</string>
+    <string name="login_toogle_text">Prijava</string>
+    <string name="register_toogle_text">Registracija</string>
 </resources>
