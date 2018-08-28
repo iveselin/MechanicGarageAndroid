@@ -14,4 +14,16 @@
     <string name="login_name_error">Morate ispuniti ovo polje</string>
     <string name="login_toogle_text">Prijava</string>
     <string name="register_toogle_text">Registracija</string>
+    <string name="garage_details_text">Garage about this and that, about this and that</string>
+    <string name="contact_info_text">Kontakt:</string>
+    <string name="garage_address_text">Garage Address</string>
+    <string name="garage_email_text">garage@email.com</string>
+    <string name="garage_phone_text">098/098-0098</string>
+    <string name="garage_info_item_text">Info</string>
+    <string name="garage_name_text">GarageName</string>
+    <string name="registration_error_text">Greška u registraciji</string>
+    <string name="sign_in_error_text">Greška prilikom prijave</string>
+    <string name="sign_in_success_text">Uspješno ste prijavljeni</string>
+    <string name="registrarion_success_text">Uspješno ste registrirani</string>
+    <string name="logout_item_text">Odjava</string>
 </resources>

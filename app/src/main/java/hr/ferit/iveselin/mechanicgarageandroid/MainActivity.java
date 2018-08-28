@@ -11,12 +11,20 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
+        FirebaseAuth.AuthStateListener {
 
     private static final String TAG = "MainActivity";
 
@@ -28,12 +36,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @BindView(R.id.action_bar)
     Toolbar toolbar;
 
+    private FirebaseAuth firebaseAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        firebaseAuth = FirebaseAuth.getInstance();
         setUi();
     }
 
@@ -48,6 +58,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        firebaseAuth.addAuthStateListener(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        firebaseAuth.removeAuthStateListener(this);
+    }
+
+    @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
         item.setChecked(true);
@@ -55,13 +77,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Fragment fragment = null;
         switch (item.getItemId()) {
             case R.id.nav_register_login:
-                fragment = LoginRegisterFragment.newInstance(LoginRegisterFragment.LOGIN_FRAGMENT);
+                if (firebaseAuth.getCurrentUser() == null) {
+                    fragment = LoginRegisterFragment.newInstance(LoginRegisterFragment.LOGIN_FRAGMENT);
+                } else {
+                    firebaseAuth.signOut();
+                }
+                break;
+            case R.id.nav_info:
+                fragment = GarageInfoFragment.newInstance();
                 break;
         }
 
         if (fragment == null) {
             // TODO: 28.8.2018. change to basic info fragment
-            fragment = LoginRegisterFragment.newInstance(LoginRegisterFragment.LOGIN_FRAGMENT);
+            fragment = GarageInfoFragment.newInstance();
         }
 
         setFragment(fragment);
@@ -95,6 +124,31 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             getFragmentManager().popBackStack();
         } else {
             super.onBackPressed();
+        }
+    }
+
+    @Override
+    public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+        FirebaseUser user = firebaseAuth.getCurrentUser();
+
+
+        View headerView = navView.getHeaderView(0);
+        TextView headerText = headerView.findViewById(R.id.nav_header_text);
+        Menu menu = navView.getMenu();
+        MenuItem login = menu.findItem(R.id.nav_register_login);
+        MenuItem appointment = menu.findItem(R.id.nav_set_appointment);
+        MenuItem details = menu.findItem(R.id.nav_car_details);
+
+        if (user != null) {
+            headerText.setText(user.getDisplayName());
+            login.setTitle(R.string.logout_item_text);
+            appointment.setEnabled(true);
+            details.setEnabled(true);
+        } else {
+            headerText.setVisibility(View.GONE);
+            login.setTitle(R.string.login_item_text);
+            appointment.setEnabled(false);
+            details.setEnabled(false);
         }
     }
 }

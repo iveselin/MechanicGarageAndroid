@@ -13,6 +13,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -44,6 +51,8 @@ public class LoginRegisterFragment extends Fragment {
 
     private int fragmentTypeFlag;
 
+    private FirebaseAuth firebaseAuth;
+
     public static LoginRegisterFragment newInstance(int fragmentTypeKey) {
         Bundle args = new Bundle();
         args.putInt(KEY_FRAGMENT_TYPE, fragmentTypeKey);
@@ -71,6 +80,7 @@ public class LoginRegisterFragment extends Fragment {
 
         getExtras();
         setUi();
+        initAuth();
     }
 
     private void getExtras() {
@@ -89,6 +99,10 @@ public class LoginRegisterFragment extends Fragment {
         } else {
             toggleType.setText(R.string.register_toogle_text);
         }
+    }
+
+    private void initAuth() {
+        firebaseAuth = FirebaseAuth.getInstance();
     }
 
 
@@ -111,6 +125,7 @@ public class LoginRegisterFragment extends Fragment {
             error = true;
         }
         if (fragmentTypeFlag == REGISTER_FRAGMENT) {
+
             if (!password.equals(password2)) {
                 passwordReinput.setError(getString(R.string.login_password_different_error));
                 passwordInput.setError(getString(R.string.login_password_different_error));
@@ -125,13 +140,56 @@ public class LoginRegisterFragment extends Fragment {
         if (error) {
             return;
         }
-        Toast.makeText(getActivity(), "Succes", Toast.LENGTH_SHORT).show();
-        // TODO: 28.8.2018. login or register
+
+        if (fragmentTypeFlag == REGISTER_FRAGMENT) {
+            createUser(email, password, name);
+        } else {
+            signInUser(email, password);
+        }
+
+    }
+
+    private void createUser(final String email, String password, final String name) {
+        firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    Log.d(TAG, "onComplete: created new user with email: " + email);
+                    FirebaseUser user = firebaseAuth.getCurrentUser();
+                    UserProfileChangeRequest userUpdates = new UserProfileChangeRequest.Builder().setDisplayName(name).build();
+                    // TODO: 28.8.2018. listener for update maybeee???
+                    user.updateProfile(userUpdates);
+                    Toast.makeText(getActivity().getApplicationContext(), R.string.registrarion_success_text, Toast.LENGTH_SHORT).show();
+                    // TODO: 28.8.2018. go to other fragment, user is signed in
+                } else {
+                    Log.w(TAG, "onComplete: failure", task.getException());
+                    Toast.makeText(getActivity().getApplicationContext(), R.string.registration_error_text, Toast.LENGTH_SHORT).show();
+                }
+            }
+
+        });
+    }
+
+    private void signInUser(String email, String password) {
+        firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    Log.d(TAG, "onComplete: sign in success");
+                    Toast.makeText(getActivity().getApplicationContext(), R.string.sign_in_success_text, Toast.LENGTH_SHORT).show();
+                    // TODO: 28.8.2018. go to other fragment, user is signed in
+                } else {
+                    Log.w(TAG, "onComplete: sign in failed", task.getException());
+                    Toast.makeText(getActivity().getApplicationContext(), R.string.sign_in_error_text, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     @OnClick(R.id.toogle_register_login)
-    void onToogleClicked() {
+    void onToggleClicked() {
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         if (fragmentTypeFlag == LoginRegisterFragment.LOGIN_FRAGMENT) {
             fragmentTransaction.replace(R.id.fragment_container, LoginRegisterFragment.newInstance(LoginRegisterFragment.REGISTER_FRAGMENT));
         } else {

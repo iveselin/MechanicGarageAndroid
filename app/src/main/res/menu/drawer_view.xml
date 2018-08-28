@@ -3,6 +3,10 @@
 
     <group android:checkableBehavior="single">
         <item
+            android:id="@+id/nav_register_login"
+            android:icon="@drawable/ic_register"
+            android:title="@string/login_item_text" />
+        <item
             android:id="@+id/nav_set_appointment"
             android:icon="@drawable/ic_appointment_icon"
             android:title="@string/appointment_item_text" />
@@ -11,13 +15,9 @@
             android:icon="@drawable/ic_car_details_icon"
             android:title="@string/car_details_item_text" />
         <item
-             android:id="@+id/nav_register_login"
-             android:icon="@drawable/ic_register"
-             android:title="@string/login_item_text" />
-         <!--<item
-             android:id="@+id/nav_manage"
-             android:icon="@drawable/ic_menu_manage"
-             android:title="@string/tools" />-->
+            android:id="@+id/nav_info"
+            android:icon="@drawable/ic_info"
+            android:title="@string/garage_info_item_text" />
     </group>
 
 
