@@ -5,22 +5,33 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-
-    <EditText
-        android:id="@+id/email_input"
+    <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/defaultMargin"
-        android:hint="@string/email_input_hint"
-        android:inputType="textEmailAddress" />
+        android:layout_marginTop="@dimen/defaultMarginSmall">
 
-    <EditText
-        android:id="@+id/password_input"
+        <EditText
+            android:id="@+id/email_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/defaultMargin"
+            android:hint="@string/email_input_hint"
+            android:inputType="textEmailAddress" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/defaultMargin"
-        android:hint="@string/password_input_hint"
-        android:inputType="textPassword" />
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/password_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/defaultMargin"
+            android:hint="@string/password_input_hint"
+            android:inputType="textPassword" />
+    </android.support.design.widget.TextInputLayout>
+
 
     <EditText
         android:id="@+id/password_reinput"
@@ -37,7 +48,9 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/defaultMargin"
         android:hint="@string/name_input_hint"
+        android:inputType="textPersonName"
         android:visibility="gone" />
+
 
     <Button
         android:id="@+id/submit_login_register"

@@ -11,6 +11,7 @@
         android:layout_height="wrap_content"
         android:gravity="bottom"
         android:text="Probni text"
+        android:textColor="@color/colorPrimaryDark"
         android:textSize="@dimen/actionBarTextSize"
         tools:text="Naslov" />
 

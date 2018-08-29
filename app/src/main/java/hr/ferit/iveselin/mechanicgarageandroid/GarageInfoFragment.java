@@ -12,6 +12,8 @@ import butterknife.ButterKnife;
 
 public class GarageInfoFragment extends Fragment {
 
+    private static final String TAG = "GarageInfoFragment";
+
     public static GarageInfoFragment newInstance() {
         return new GarageInfoFragment();
     }

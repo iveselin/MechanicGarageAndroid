@@ -86,6 +86,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_info:
                 fragment = GarageInfoFragment.newInstance();
                 break;
+
+            case R.id.nav_car_details:
+                fragment = CarDetailsFragment.newInstance();
+                break;
         }
 
         if (fragment == null) {

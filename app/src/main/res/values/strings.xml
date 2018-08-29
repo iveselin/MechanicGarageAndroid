@@ -26,4 +26,12 @@
     <string name="sign_in_success_text">Uspješno ste prijavljeni</string>
     <string name="registrarion_success_text">Uspješno ste registrirani</string>
     <string name="logout_item_text">Odjava</string>
+    <string name="car_details_title_text">Informacije o automobilu:</string>
+    <string name="car_make_hint">Proizvođač:</string>
+    <string name="car_model_hint">Model:</string>
+    <string name="car_engine_hint">Tip motora(npr. 2.0 diesel):</string>
+    <string name="car_vin_hint">Broj šasije(VIN):</string>
+    <string name="car_year_label">Godina proizvodnje:</string>
+    <string name="empty_input_field_error">Morate popuniti ovo polje</string>
+    <string name="wrong_VIN_error">Neispravan VIN</string>
 </resources>
