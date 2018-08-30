@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -141,6 +142,9 @@ public class LoginRegisterFragment extends Fragment {
             return;
         }
 
+        emailInput.onEditorAction(EditorInfo.IME_ACTION_DONE);
+        passwordInput.onEditorAction(EditorInfo.IME_ACTION_DONE);
+
         if (fragmentTypeFlag == REGISTER_FRAGMENT) {
             createUser(email, password, name);
         } else {
@@ -157,10 +161,9 @@ public class LoginRegisterFragment extends Fragment {
                     Log.d(TAG, "onComplete: created new user with email: " + email);
                     FirebaseUser user = firebaseAuth.getCurrentUser();
                     UserProfileChangeRequest userUpdates = new UserProfileChangeRequest.Builder().setDisplayName(name).build();
-                    // TODO: 28.8.2018. listener for update maybeee???
                     user.updateProfile(userUpdates);
                     Toast.makeText(getActivity().getApplicationContext(), R.string.registrarion_success_text, Toast.LENGTH_SHORT).show();
-                    // TODO: 28.8.2018. go to other fragment, user is signed in
+                    onSuccessfulSingIn();
                 } else {
                     Log.w(TAG, "onComplete: failure", task.getException());
                     Toast.makeText(getActivity().getApplicationContext(), R.string.registration_error_text, Toast.LENGTH_SHORT).show();
@@ -177,7 +180,7 @@ public class LoginRegisterFragment extends Fragment {
                 if (task.isSuccessful()) {
                     Log.d(TAG, "onComplete: sign in success");
                     Toast.makeText(getActivity().getApplicationContext(), R.string.sign_in_success_text, Toast.LENGTH_SHORT).show();
-                    // TODO: 28.8.2018. go to other fragment, user is signed in
+                    onSuccessfulSingIn();
                 } else {
                     Log.w(TAG, "onComplete: sign in failed", task.getException());
                     Toast.makeText(getActivity().getApplicationContext(), R.string.sign_in_error_text, Toast.LENGTH_SHORT).show();
@@ -195,6 +198,12 @@ public class LoginRegisterFragment extends Fragment {
         } else {
             fragmentTransaction.replace(R.id.fragment_container, LoginRegisterFragment.newInstance(LoginRegisterFragment.LOGIN_FRAGMENT));
         }
+        fragmentTransaction.commit();
+    }
+
+    private void onSuccessfulSingIn() {
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.fragment_container, GarageInfoFragment.newInstance());
         fragmentTransaction.commit();
     }
 }

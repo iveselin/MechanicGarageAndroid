@@ -95,7 +95,7 @@ public class CarDetailsFragment extends Fragment {
             return;
         }
         Car carToSave = new Car(user.getUid(), carMake, carModel, carYear, carEngine, carVIN);
-
+        // TODO: 30.8.2018. save or update car in DB
         Log.d(TAG, "onCarSubmitClicked: saving a car: " + carToSave.toString());
     }
 

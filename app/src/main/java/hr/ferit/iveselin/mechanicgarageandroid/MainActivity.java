@@ -90,10 +90,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_car_details:
                 fragment = CarDetailsFragment.newInstance();
                 break;
+            case R.id.nav_set_appointment:
+                fragment = AppointmentFragment.newInstance();
+                break;
         }
 
         if (fragment == null) {
-            // TODO: 28.8.2018. change to basic info fragment
             fragment = GarageInfoFragment.newInstance();
         }
 
@@ -155,4 +157,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             details.setEnabled(false);
         }
     }
+
+
 }

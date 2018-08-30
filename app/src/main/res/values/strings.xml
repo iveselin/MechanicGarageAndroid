@@ -24,7 +24,7 @@
     <string name="registration_error_text">Greška u registraciji</string>
     <string name="sign_in_error_text">Greška prilikom prijave</string>
     <string name="sign_in_success_text">Uspješno ste prijavljeni</string>
-    <string name="registrarion_success_text">Uspješno ste registrirani</string>
+    <string name="registrarion_success_text">Uspješno ste registrirani i prijavljeni</string>
     <string name="logout_item_text">Odjava</string>
     <string name="car_details_title_text">Informacije o automobilu:</string>
     <string name="car_make_hint">Proizvođač:</string>
@@ -34,4 +34,15 @@
     <string name="car_year_label">Godina proizvodnje:</string>
     <string name="empty_input_field_error">Morate popuniti ovo polje</string>
     <string name="wrong_VIN_error">Neispravan VIN</string>
+    <string name="garage_appointment_title_text">Zatraži termin:</string>
+    <string name="required_service_small_text">Mali servis</string>
+    <string name="required_service_brakes_text">Servis kočnica</string>
+    <string name="required_service_big_text">Veliki servis</string>
+    <string name="service_type_text">Vrsta servisa:</string>
+    <string name="required_service_diagnostics_text">Dijagnostika</string>
+    <string name="required_service_tyres_text">Izmjena/provjera guma</string>
+    <string name="required_service_other_text">Ostalo</string>
+    <string name="extra_note_input_hint">Dodatne poruke servisu(nije obvezno ali se preporuča):</string>
+    <string name="submit_service_request_text">Podnesi zahtjev</string>
+    <string name="no_service_checked_error">Morate odabrati barem jednu vrstu servisa</string>
 </resources>
