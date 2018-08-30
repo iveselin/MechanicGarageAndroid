@@ -15,8 +15,15 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -25,6 +32,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import hr.ferit.iveselin.mechanicgarageandroid.model.Car;
+import hr.ferit.iveselin.mechanicgarageandroid.model.User;
 import hr.ferit.iveselin.mechanicgarageandroid.utils.StringUtils;
 
 public class CarDetailsFragment extends Fragment {
@@ -45,8 +53,9 @@ public class CarDetailsFragment extends Fragment {
     @BindView(R.id.submit_car)
     Button carSubmit;
 
-    private FirebaseAuth firebaseAuth;
     private FirebaseUser user;
+    private FirebaseFirestore firestoreDB;
+    private User userData;
 
     private String carMake;
     private String carModel;
@@ -87,6 +96,9 @@ public class CarDetailsFragment extends Fragment {
 
     private void init() {
         user = FirebaseAuth.getInstance().getCurrentUser();
+        firestoreDB = FirebaseFirestore.getInstance();
+
+
     }
 
     @OnClick(R.id.submit_car)
@@ -95,8 +107,24 @@ public class CarDetailsFragment extends Fragment {
             return;
         }
         Car carToSave = new Car(user.getUid(), carMake, carModel, carYear, carEngine, carVIN);
-        // TODO: 30.8.2018. save or update car in DB
+
+        updateUserWithCar(carToSave);
         Log.d(TAG, "onCarSubmitClicked: saving a car: " + carToSave.toString());
+    }
+
+    private void updateUserWithCar(final Car carToSave) {
+        Log.d(TAG, "updateUserWithCar: updating user");
+        DocumentReference userDataReference = firestoreDB.collection("users").document(user.getUid());
+        userDataReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                userData = documentSnapshot.toObject(User.class);
+                userData.setCar(carToSave);
+                firestoreDB.collection("users").document(userData.getUid()).set(userData, SetOptions.merge());
+                // TODO: 30.8.2018. notifiy the user and go to garage info
+            }
+        });
+
     }
 
     private boolean inputsValidated() {
