@@ -20,10 +20,16 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import hr.ferit.iveselin.mechanicgarageandroid.model.User;
 import hr.ferit.iveselin.mechanicgarageandroid.utils.StringUtils;
 
 public class LoginRegisterFragment extends Fragment {
@@ -44,6 +50,8 @@ public class LoginRegisterFragment extends Fragment {
     EditText passwordReinput;
     @BindView(R.id.name_input)
     EditText nameInput;
+    @BindView(R.id.phone_input)
+    EditText phoneInput;
     @BindView(R.id.submit_login_register)
     Button submitRegisterLogin;
     @BindView(R.id.toogle_register_login)
@@ -96,6 +104,7 @@ public class LoginRegisterFragment extends Fragment {
         if (fragmentTypeFlag == REGISTER_FRAGMENT) {
             passwordReinput.setVisibility(View.VISIBLE);
             nameInput.setVisibility(View.VISIBLE);
+            phoneInput.setVisibility(View.VISIBLE);
             toggleType.setText(R.string.login_toogle_text);
         } else {
             toggleType.setText(R.string.register_toogle_text);
@@ -114,6 +123,7 @@ public class LoginRegisterFragment extends Fragment {
         String password = passwordInput.getText().toString().trim();
         String password2 = passwordReinput.getText().toString().trim();
         String name = nameInput.getText().toString().trim();
+        String phone = phoneInput.getText().toString().trim();
 
         boolean error = false;
 
@@ -136,6 +146,10 @@ public class LoginRegisterFragment extends Fragment {
                 nameInput.setError(getString(R.string.login_name_error));
                 error = true;
             }
+            if (phone.isEmpty()) {
+                phoneInput.setError(getString(R.string.login_name_error));
+                error = true;
+            }
         }
 
         if (error) {
@@ -146,22 +160,24 @@ public class LoginRegisterFragment extends Fragment {
         passwordInput.onEditorAction(EditorInfo.IME_ACTION_DONE);
 
         if (fragmentTypeFlag == REGISTER_FRAGMENT) {
-            createUser(email, password, name);
+            User userToCreate = new User(email, name, phone, null, null);
+            createUser(userToCreate, password);
         } else {
             signInUser(email, password);
         }
 
     }
 
-    private void createUser(final String email, String password, final String name) {
-        firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
+    private void createUser(final User userToCreate, String password) {
+        firebaseAuth.createUserWithEmailAndPassword(userToCreate.getEmail(), password).addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    Log.d(TAG, "onComplete: created new user with email: " + email);
+                    Log.d(TAG, "onComplete: created new user with email: " + userToCreate.getEmail());
                     FirebaseUser user = firebaseAuth.getCurrentUser();
-                    UserProfileChangeRequest userUpdates = new UserProfileChangeRequest.Builder().setDisplayName(name).build();
+                    UserProfileChangeRequest userUpdates = new UserProfileChangeRequest.Builder().setDisplayName(userToCreate.getName()).build();
                     user.updateProfile(userUpdates);
+                    saveUserToDB(user, userToCreate);
                     Toast.makeText(getActivity().getApplicationContext(), R.string.registrarion_success_text, Toast.LENGTH_SHORT).show();
                     onSuccessfulSingIn();
                 } else {
@@ -171,6 +187,13 @@ public class LoginRegisterFragment extends Fragment {
             }
 
         });
+    }
+
+    private void saveUserToDB(FirebaseUser firebaseUser, User user) {
+        user.setUid(firebaseUser.getUid());
+
+        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+        firestore.collection("users").document(user.getUid()).set(user, SetOptions.merge());
     }
 
     private void signInUser(String email, String password) {

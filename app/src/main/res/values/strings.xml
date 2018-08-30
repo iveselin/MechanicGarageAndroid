@@ -45,4 +45,5 @@
     <string name="extra_note_input_hint">Dodatne poruke servisu(nije obvezno ali se preporuča):</string>
     <string name="submit_service_request_text">Podnesi zahtjev</string>
     <string name="no_service_checked_error">Morate odabrati barem jednu vrstu servisa</string>
+    <string name="phone_input_hint">Kontakt telefon</string>
 </resources>
