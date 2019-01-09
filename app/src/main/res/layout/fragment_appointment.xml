@@ -104,12 +104,21 @@
         android:hint="@string/extra_note_input_hint"
         android:lines="4" />
 
+    <Spinner
+        android:id="@+id/appointment_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/extra_note_input"
+        android:layout_marginLeft="@dimen/defaultMarginSmall"
+        android:layout_marginRight="@dimen/defaultMarginSmall"
+        android:layout_marginTop="@dimen/defaultMarginSmall"/>
+
     <Button
         android:id="@+id/submit_service_request"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_margin="@dimen/defaultMarginSmall"
-        android:text="@string/submit_service_request_text"/>
+        android:text="@string/submit_service_request_text" />
 
 </RelativeLayout>

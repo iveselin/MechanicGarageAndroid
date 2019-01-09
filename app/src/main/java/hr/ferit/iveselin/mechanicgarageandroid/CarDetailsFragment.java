@@ -1,6 +1,6 @@
 package hr.ferit.iveselin.mechanicgarageandroid;
 
-import android.content.Intent;
+
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,9 +15,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -33,7 +31,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import hr.ferit.iveselin.mechanicgarageandroid.model.Car;
 import hr.ferit.iveselin.mechanicgarageandroid.model.User;
-import hr.ferit.iveselin.mechanicgarageandroid.utils.StringUtils;
+import hr.ferit.iveselin.mechanicgarageandroid.utils.DBConstants;
 
 public class CarDetailsFragment extends Fragment {
 
@@ -56,12 +54,15 @@ public class CarDetailsFragment extends Fragment {
     private FirebaseUser user;
     private FirebaseFirestore firestoreDB;
     private User userData;
+    private DocumentReference userDataReference;
 
     private String carMake;
     private String carModel;
     private String carEngine;
     private String carVIN;
     private int carYear;
+
+    private ArrayAdapter<String> yearAdapter;
 
 
     public static CarDetailsFragment newInstance() {
@@ -90,15 +91,16 @@ public class CarDetailsFragment extends Fragment {
         for (int i = currentYear; i >= 1980; i--) {
             years.add(Integer.toString(i));
         }
-        ArrayAdapter<String> yearAdapter = new ArrayAdapter<>(getActivity().getApplicationContext(), R.layout.spinner_item, years);
+        yearAdapter = new ArrayAdapter<>(getActivity().getApplicationContext(), R.layout.spinner_item, years);
         carYearInput.setAdapter(yearAdapter);
     }
 
     private void init() {
         user = FirebaseAuth.getInstance().getCurrentUser();
         firestoreDB = FirebaseFirestore.getInstance();
+        userDataReference = firestoreDB.collection(DBConstants.DB_USERS_COLLECTION).document(user.getUid());
 
-
+        getUserData();
     }
 
     @OnClick(R.id.submit_car)
@@ -108,23 +110,48 @@ public class CarDetailsFragment extends Fragment {
         }
         Car carToSave = new Car(user.getUid(), carMake, carModel, carYear, carEngine, carVIN);
 
-        updateUserWithCar(carToSave);
+        setUserData(carToSave);
         Log.d(TAG, "onCarSubmitClicked: saving a car: " + carToSave.toString());
     }
 
-    private void updateUserWithCar(final Car carToSave) {
-        Log.d(TAG, "updateUserWithCar: updating user");
-        DocumentReference userDataReference = firestoreDB.collection("users").document(user.getUid());
+    private void getUserData() {
         userDataReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 userData = documentSnapshot.toObject(User.class);
-                userData.setCar(carToSave);
-                firestoreDB.collection("users").document(userData.getUid()).set(userData, SetOptions.merge());
-                // TODO: 30.8.2018. notifiy the user and go to garage info
+                if (userData.getCar() != null) {
+                    updateUiWithCar(userData.getCar());
+                    carSubmit.setText(R.string.update_car_text);
+                } else {
+                    carSubmit.setText(R.string.set_car_text);
+                }
             }
         });
+    }
 
+    private void updateUiWithCar(Car car) {
+        carMakeInput.setText(car.getMake());
+        carModelInput.setText(car.getModel());
+        carVinInput.setText(car.getCarVIN());
+        carEngineInput.setText(car.getEngine());
+        carYearInput.setSelection(yearAdapter.getPosition(Integer.toString(car.getYear())));
+    }
+
+    private void setUserData(final Car carToSave) {
+        if (userData != null) {
+            userData.setCar(carToSave);
+            firestoreDB.collection(DBConstants.DB_USERS_COLLECTION).document(userData.getUid()).set(userData, SetOptions.merge());
+            Toast.makeText(getActivity().getApplicationContext(), "Auto je spremljen", Toast.LENGTH_SHORT).show();
+
+            onCarSaved();
+        } else {
+            Toast.makeText(getActivity().getApplicationContext(), getString(R.string.crash_error_text), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    private void onCarSaved() {
+        getActivity().onBackPressed();
     }
 
     private boolean inputsValidated() {
@@ -135,6 +162,7 @@ public class CarDetailsFragment extends Fragment {
         carYear = Integer.parseInt(carYearInput.getSelectedItem().toString());
         carEngine = carEngineInput.getText().toString().trim();
         carVIN = carVinInput.getText().toString().trim();
+
         if (carMake.isEmpty()) {
             error = true;
             carMakeInput.setError(getString(R.string.empty_input_field_error));
@@ -155,6 +183,7 @@ public class CarDetailsFragment extends Fragment {
             error = true;
             carVinInput.setError(getString(R.string.wrong_VIN_error));
         }
+
         return !error;
     }
 }

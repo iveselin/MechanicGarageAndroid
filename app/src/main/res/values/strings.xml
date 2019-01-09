@@ -46,4 +46,9 @@
     <string name="submit_service_request_text">Podnesi zahtjev</string>
     <string name="no_service_checked_error">Morate odabrati barem jednu vrstu servisa</string>
     <string name="phone_input_hint">Kontakt telefon</string>
+    <string name="login_between_buttons_text">ili</string>
+    <string name="request_success_text">Zahtjev predan</string>
+    <string name="crash_error_text">Nešto je pošlo po zlu...</string>
+    <string name="update_car_text">Uredi automobil</string>
+    <string name="set_car_text">Dodaj automobil</string>
 </resources>

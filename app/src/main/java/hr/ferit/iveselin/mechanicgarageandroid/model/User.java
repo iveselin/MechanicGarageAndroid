@@ -6,6 +6,8 @@ public class User {
     private String name;
     private String phone;
     private String uid;
+    private Car car;
+
 
     public User() {
     }
@@ -57,6 +59,4 @@ public class User {
     public void setCar(Car car) {
         this.car = car;
     }
-
-    private Car car;
 }

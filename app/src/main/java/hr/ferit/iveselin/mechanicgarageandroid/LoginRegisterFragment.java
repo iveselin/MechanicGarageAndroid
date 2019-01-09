@@ -23,13 +23,11 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import hr.ferit.iveselin.mechanicgarageandroid.model.User;
+import hr.ferit.iveselin.mechanicgarageandroid.utils.DBConstants;
 import hr.ferit.iveselin.mechanicgarageandroid.utils.StringUtils;
 
 public class LoginRegisterFragment extends Fragment {
@@ -193,7 +191,7 @@ public class LoginRegisterFragment extends Fragment {
         user.setUid(firebaseUser.getUid());
 
         FirebaseFirestore firestore = FirebaseFirestore.getInstance();
-        firestore.collection("users").document(user.getUid()).set(user, SetOptions.merge());
+        firestore.collection(DBConstants.DB_USERS_COLLECTION).document(user.getUid()).set(user, SetOptions.merge());
     }
 
     private void signInUser(String email, String password) {
@@ -214,19 +212,17 @@ public class LoginRegisterFragment extends Fragment {
 
     @OnClick(R.id.toogle_register_login)
     void onToggleClicked() {
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
         fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         if (fragmentTypeFlag == LoginRegisterFragment.LOGIN_FRAGMENT) {
-            fragmentTransaction.replace(R.id.fragment_container, LoginRegisterFragment.newInstance(LoginRegisterFragment.REGISTER_FRAGMENT));
+            fragmentTransaction.replace(R.id.fragment_container, LoginRegisterFragment.newInstance(LoginRegisterFragment.REGISTER_FRAGMENT)).addToBackStack(null);
         } else {
-            fragmentTransaction.replace(R.id.fragment_container, LoginRegisterFragment.newInstance(LoginRegisterFragment.LOGIN_FRAGMENT));
+            fragmentTransaction.replace(R.id.fragment_container, LoginRegisterFragment.newInstance(LoginRegisterFragment.LOGIN_FRAGMENT)).addToBackStack(null);
         }
         fragmentTransaction.commit();
     }
 
     private void onSuccessfulSingIn() {
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_container, GarageInfoFragment.newInstance());
-        fragmentTransaction.commit();
+        getActivity().onBackPressed();
     }
 }

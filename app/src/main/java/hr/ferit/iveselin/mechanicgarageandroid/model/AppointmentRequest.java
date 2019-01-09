@@ -1,25 +1,43 @@
 package hr.ferit.iveselin.mechanicgarageandroid.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import hr.ferit.iveselin.mechanicgarageandroid.utils.StringUtils;
 
 public class AppointmentRequest {
 
-    private String[] requestType;
+    private List<String> requestType = new ArrayList<>();
     private String extraNote;
+    private String uid;
+    private boolean done = false;
+    private String worker = null;
+    private int time;
+
+    public int getTime() {
+        return time;
+    }
+
+    public void setTime(int time) {
+        this.time = time;
+    }
 
     public AppointmentRequest() {
     }
 
-    public AppointmentRequest(String[] requestType, String extraNote) {
+    public AppointmentRequest(List<String> requestType, String extraNote, String uid, int time) {
         this.requestType = requestType;
         this.extraNote = extraNote;
+        this.uid = uid;
+        this.done = false;
+        this.time = time;
     }
 
-    public String[] getRequestType() {
+    public List<String> getRequestType() {
         return requestType;
     }
 
-    public void setRequestType(String[] requestType) {
+    public void setRequestType(List<String> requestType) {
         this.requestType = requestType;
     }
 
@@ -31,6 +49,30 @@ public class AppointmentRequest {
         this.extraNote = extraNote;
     }
 
+    public String getUid() {
+        return StringUtils.getValueOrEmpty(uid);
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    public boolean isDone() {
+        return done;
+    }
+
+    public void setDone(boolean done) {
+        this.done = done;
+    }
+
+    public String getWorker() {
+        return worker;
+    }
+
+    public void setWorker(String worker) {
+        this.worker = worker;
+    }
+
     @Override
     public String toString() {
         String requests = "";
@@ -38,8 +80,9 @@ public class AppointmentRequest {
             requests.concat(s + ", ");
         }
         return "AppointmentRequest{" +
-                "requestType='" + requests +'\'' +
+                "requestType='" + requests + '\'' +
                 ", extraNote='" + extraNote + '\'' +
+                ", uid='" + uid + '\'' +
                 '}';
     }
 }
